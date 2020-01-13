@@ -4,3 +4,4 @@ export './cart_item.dart';
 export './order_widget.dart';
 export './product_grid.dart';
 export './product_item.dart';
+export './user_product_item.dart';
