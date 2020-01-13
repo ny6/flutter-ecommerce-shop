@@ -9,6 +9,7 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
+    final ordersProvider = Provider.of<Orders>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(title: Text('Cart')),
@@ -34,8 +35,14 @@ class CartScreen extends StatelessWidget {
                   ),
                   FlatButton(
                     child: Text('ORDER NOW'),
-                    onPressed: () {},
                     textColor: Theme.of(context).primaryColor,
+                    onPressed: () {
+                      ordersProvider.addOrder(
+                        cart.items.values.toList(),
+                        cart.totoalAmount,
+                      );
+                      cart.clearCart();
+                    },
                   ),
                 ],
               ),
