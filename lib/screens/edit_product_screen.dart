@@ -73,31 +73,43 @@ class _EditProductScreenState extends State<EditProductScreen> {
     _imageUrlFocusNode.dispose();
   }
 
-  void _saveForm() {
-    final isValid = _form.currentState.validate();
-    if (!isValid) return;
+  void _saveForm() async {
+    try {
+      final isValid = _form.currentState.validate();
+      if (!isValid) return;
 
-    _form.currentState.save();
+      _form.currentState.save();
 
-    setState(() {
-      _isLoading = true;
-    });
+      setState(() {
+        _isLoading = true;
+      });
 
-    final productProvider = Provider.of<Products>(context, listen: false);
+      final productProvider = Provider.of<Products>(context, listen: false);
 
-    if (_editedProduct.id != null) {
-      productProvider.updateProduct(_editedProduct);
+      if (_editedProduct.id != null) {
+        productProvider.updateProduct(_editedProduct);
+      } else {
+        await productProvider.addProduct(_editedProduct);
+      }
+    } catch (err) {
+      await showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('An error occured!'),
+          content: Text('Something went wrong!'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Okay'),
+              onPressed: () => Navigator.of(ctx).pop(),
+            )
+          ],
+        ),
+      );
+    } finally {
       setState(() {
         _isLoading = false;
       });
       Navigator.of(context).pop();
-    } else {
-      productProvider.addProduct(_editedProduct).then((_) {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pop();
-      });
     }
   }
 

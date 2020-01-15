@@ -47,15 +47,17 @@ class Products with ChangeNotifier {
 
   Product findById(String id) => _items.firstWhere((prod) => prod.id == id);
 
-  Future<void> addProduct(Product product) {
-    final body = json.encode({
-      'title': product.title,
-      'description': product.description,
-      'price': product.price,
-      'imageUrl': product.imageUrl,
-    });
+  Future<void> addProduct(Product product) async {
+    try {
+      final body = json.encode({
+        'title': product.title,
+        'description': product.description,
+        'price': product.price,
+        'imageUrl': product.imageUrl,
+      });
 
-    return http.post(_url, body: body).then((res) {
+      final res = await http.post(_url, body: body);
+
       final newProduct = Product(
         id: json.decode(res.body)['name'],
         title: product.title,
@@ -67,7 +69,9 @@ class Products with ChangeNotifier {
       _items.add(newProduct);
 
       notifyListeners();
-    }).catchError((err) => print(err));
+    } catch (err) {
+      throw err;
+    }
   }
 
   void updateProduct(Product product) {
