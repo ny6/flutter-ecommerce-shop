@@ -45,7 +45,7 @@ class Products with ChangeNotifier {
 
   void addProduct(Product product) {
     final newProduct = Product(
-      id: product.id ?? DateTime.now().toString(),
+      id: DateTime.now().toString(),
       title: product.title,
       description: product.description,
       price: product.price,
@@ -55,5 +55,13 @@ class Products with ChangeNotifier {
     _items.add(newProduct);
 
     notifyListeners();
+  }
+
+  void updateProduct(Product product) {
+    final index = _items.indexWhere((p) => p.id == product.id);
+    if (index >= 0) {
+      _items[index] = product;
+      notifyListeners();
+    }
   }
 }
