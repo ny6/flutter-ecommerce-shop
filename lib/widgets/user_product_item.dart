@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../screens/screens.dart';
+import '../providers/providers.dart';
 
 class UserProductItem extends StatelessWidget {
-  UserProductItem(this.id, this.title, this.imageUrl);
+  UserProductItem(this.product);
 
-  final String id;
-  final String title;
-  final String imageUrl;
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
+    final productsProvider = Provider.of<Products>(context, listen: false);
+
     return ListTile(
-      title: Text(title),
-      leading: CircleAvatar(backgroundImage: NetworkImage(imageUrl)),
+      title: Text(product.title),
+      leading: CircleAvatar(backgroundImage: NetworkImage(product.imageUrl)),
       trailing: Container(
         width: 100,
         child: Row(
@@ -23,14 +25,14 @@ class UserProductItem extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pushNamed(
                   EditProductScreen.routeName,
-                  arguments: id,
+                  arguments: product.id,
                 );
               },
             ),
             IconButton(
               icon: Icon(Icons.delete),
               color: Theme.of(context).errorColor,
-              onPressed: () {},
+              onPressed: () => productsProvider.deleteProduct(product.id),
             ),
           ],
         ),
