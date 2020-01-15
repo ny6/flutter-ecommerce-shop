@@ -45,6 +45,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   void _saveForm() {
+    final isValid = _form.currentState.validate();
+    if (!isValid) return;
+
     _form.currentState.save();
     print(_editedProduct.title);
     print(_editedProduct.price);
@@ -74,6 +77,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_priceFocusNode);
                 },
+                validator: (value) {
+                  if (value.isEmpty || value.trim().isEmpty) {
+                    return 'Title is required!';
+                  }
+
+                  return null;
+                },
                 onSaved: (value) {
                   _editedProduct = Product(
                     id: null,
@@ -92,6 +102,17 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_descriptionFocusNode);
                 },
+                validator: (value) {
+                  if (value.isEmpty || value.trim().isEmpty) {
+                    return 'Price is required!';
+                  }
+                  if (double.tryParse(value) == null) return 'Invalid price!';
+                  if (double.parse(value) <= 0) {
+                    return 'Price should be greater than 0';
+                  }
+
+                  return null;
+                },
                 onSaved: (value) {
                   _editedProduct = Product(
                     id: null,
@@ -107,6 +128,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
                 focusNode: _descriptionFocusNode,
+                validator: (value) {
+                  if (value.isEmpty || value.trim().isEmpty) {
+                    return 'Description is required!';
+                  }
+
+                  if (value.length < 10) return 'Description is too short!';
+
+                  return null;
+                },
                 onSaved: (value) {
                   _editedProduct = Product(
                     id: null,
@@ -144,6 +174,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       controller: _imageUrlController,
                       focusNode: _imageUrlFocusNode,
                       onFieldSubmitted: (_) => _saveForm(),
+                      validator: (value) {
+                        if (value.isEmpty || value.trim().isEmpty) {
+                          return 'Image URL is required!';
+                        }
+                        if (!value.startsWith('http')) return 'Invalid URL!';
+
+                        return null;
+                      },
                       onSaved: (value) {
                         _editedProduct = Product(
                           id: null,
