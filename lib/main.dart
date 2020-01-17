@@ -10,6 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider.value(value: Auth()),
         ChangeNotifierProvider.value(value: Cart()),
         ChangeNotifierProvider.value(value: Orders()),
         ChangeNotifierProvider.value(value: Products()),
@@ -21,8 +22,10 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.deepOrange,
           fontFamily: 'Lato',
         ),
+        home: AuthScreen(),
         routes: {
-          ProductsOverviewScreen.routeName: (_) => ProductsOverviewScreen(),
+          // AuthScreen.routeName: (_) => AuthScreen(),
+          // ProductsOverviewScreen.routeName: (_) => ProductsOverviewScreen(),
           ProductDetailScreen.routeName: (_) => ProductDetailScreen(),
           CartScreen.routeName: (_) => CartScreen(),
           OrdersScreen.routeName: (_) => OrdersScreen(),
