@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../screens/screens.dart';
 import '../providers/providers.dart';
+import '../helpers/helpers.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -28,9 +29,12 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.payment),
             title: const Text('Orders'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(
-                OrdersScreen.routeName,
-              );
+              // Navigator.of(context).pushReplacementNamed(
+              //   OrdersScreen.routeName,
+              // );
+              Navigator.of(context).pushReplacement(CustomRoute(
+                builder: (_) => OrdersScreen(),
+              ));
             },
           ),
           const Divider(),
