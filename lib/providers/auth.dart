@@ -5,11 +5,21 @@ import 'package:http/http.dart' as http;
 import '../models/models.dart';
 
 class Auth with ChangeNotifier {
-  static const String _apiKey = 'AIzaSyBiKpfNeopHs4mRAjMLS1UEUFtsZdHcAAY';
-
   String _token;
   DateTime _expiryDate;
   String _userId;
+
+  String get token {
+    if (_token != null &&
+        _expiryDate != null &&
+        _expiryDate.isAfter(DateTime.now())) {
+      return _token;
+    }
+
+    return null;
+  }
+
+  bool get isAuth => token != null;
 
   Future<void> _authenticate(
     String email,
@@ -28,11 +38,18 @@ class Auth with ChangeNotifier {
     final res = await http.post(url, body: body);
 
     final parsedBody = json.decode(res.body);
-    print(parsedBody);
 
     if (parsedBody['error'] != null) {
       throw HttpException(parsedBody['error']['message']);
     }
+
+    _token = parsedBody['idToken'];
+    _userId = parsedBody['localId'];
+    _expiryDate = DateTime.now().add(Duration(
+      seconds: int.parse(parsedBody['expiresIn']),
+    ));
+
+    notifyListeners();
   }
 
   Future<void> signup(String email, String password) =>

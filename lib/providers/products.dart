@@ -4,7 +4,11 @@ import 'package:http/http.dart' as http;
 import './product.dart';
 
 class Products with ChangeNotifier {
-  final _url = 'https://ecommerce-yk.firebaseio.com/products.json';
+  String _authToken;
+
+  set authToken(String value) {
+    _authToken = value;
+  }
 
   List<Product> _items = [];
 
@@ -15,6 +19,8 @@ class Products with ChangeNotifier {
   Product findById(String id) => _items.firstWhere((prod) => prod.id == id);
 
   Future<void> fetchAndSetProducts() async {
+    final _url =
+        'https://ecommerce-yk.firebaseio.com/products.json?auth=$_authToken';
     final res = await http.get(_url);
     final body = json.decode(res.body) as Map<String, dynamic>;
 
@@ -41,6 +47,9 @@ class Products with ChangeNotifier {
       'price': product.price,
       'imageUrl': product.imageUrl,
     });
+
+    final _url =
+        'https://ecommerce-yk.firebaseio.com/products.json?auth=$_authToken';
 
     final res = await http.post(_url, body: body);
 
