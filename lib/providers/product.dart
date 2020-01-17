@@ -22,6 +22,7 @@ class Product with ChangeNotifier {
 
   Future<void> toggleFavoriteStatus() async {
     final oldStatus = isFavorite;
+    // API won't work due to missing auth token
     final url = 'https://ecommerce-yk.firebaseio.com/products/$id.json';
 
     isFavorite = !isFavorite;

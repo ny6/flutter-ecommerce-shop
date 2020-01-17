@@ -10,6 +10,9 @@ class Products with ChangeNotifier {
     _authToken = value;
   }
 
+  String _getApiUrl(String urlSegment) =>
+      'https://ecommerce-yk.firebaseio.com/products$urlSegment.json?auth=$_authToken';
+
   List<Product> _items = [];
 
   List<Product> get items => [..._items];
@@ -19,8 +22,8 @@ class Products with ChangeNotifier {
   Product findById(String id) => _items.firstWhere((prod) => prod.id == id);
 
   Future<void> fetchAndSetProducts() async {
-    final _url =
-        'https://ecommerce-yk.firebaseio.com/products.json?auth=$_authToken';
+    final _url = _getApiUrl('');
+
     final res = await http.get(_url);
     final body = json.decode(res.body) as Map<String, dynamic>;
 
@@ -41,15 +44,13 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
+    final _url = _getApiUrl('');
     final body = json.encode({
       'title': product.title,
       'description': product.description,
       'price': product.price,
       'imageUrl': product.imageUrl,
     });
-
-    final _url =
-        'https://ecommerce-yk.firebaseio.com/products.json?auth=$_authToken';
 
     final res = await http.post(_url, body: body);
 
@@ -67,8 +68,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> updateProduct(Product product) async {
-    final url =
-        'https://ecommerce-yk.firebaseio.com/products/${product.id}.json';
+    final url = _getApiUrl('/${product.id}');
     final body = json.encode({
       'title': product.title,
       'description': product.description,
@@ -86,7 +86,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final url = 'https://ecommerce-yk.firebaseio.com/products/$id.json';
+    final url = _getApiUrl('/$id');
     await http.delete(url);
 
     _items.removeWhere((prod) => prod.id == id);
